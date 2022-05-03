@@ -4,26 +4,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Player</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
+
     <link rel="stylesheet" href="./main.css" />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
       rel="stylesheet"
     />
+    <script src="https://use.fontawesome.com/b993e11fc1.js"></script>
   </head>
   <body>
-    <div class="container">
+    <div class="ui-container container">
       <div class="music-player">
-        <div>
-          <img
-            src="img/maxresdefault.webp"
-            class="artist-image"
-            alt="on and on"
-          />
-        </div>
+        <div class="artist-img-bg"></div>
+        <img
+          src="img/maxresdefault.webp"
+          class="artist-image"
+          alt="on and on"
+        />
         <div class="song-title-container">
           <h3 id="title">No song</h3>
           <div id="time-progress" class="ui tiny progress">
@@ -32,14 +29,11 @@
           </div>
         </div>
         <div class="controls">
-          <i data-type="prev" id="prev" class="fa fa-backward"></i>
-          <i data-type="play" id="play" class="fa fa-play"></i>
-          <i data-type="next" id="pause" class="fa fa-forward"></i>
+          <i data-type="prev" id="prev" class="icon backward"></i>
+          <i data-type="play" id="play" class="icon play circle outline"></i>
+          <i data-type="next" id="pause" class="icon forward"></i>
         </div>
-        <!-- <div id="lyrics-1">
-                [00:05.00] This is a little song
-                [00:07.00] The song that nobody knows
-                </div> -->
+        <div id="song-list" class="ui middle aligned divided list"></div>
       </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -50,28 +44,85 @@
       var songs = [
         {
           artist: "Eden Gebreselassie",
-          image: "edeng.jpeg",
+          image:
+            "https://images-eu.ssl-images-amazon.com/images/I/41HErGNpzBL._SR600%2C315_PIWhiteStrip%2CBottomLeft%2C0%2C35_SCLZZZZZZZ_FMpng_BG255%2C255%2C255.jpg",
           title: "Goblel",
           song: "onandon.mp3",
         },
         {
           artist: "Amanuel Yemane",
-          image: "edeng.jpeg",
+          image:
+            "data:image/jpeg;base64,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",
           title: "Adi Latni",
           song: "fireflies.mp3",
         },
       ];
 
+      var list_of_songs = songs
+        .map(function (song, index) {
+          return ` <div class="item" data-src="${song.song}"" data-title="${song.title}" data-artist="${song.artist}" data-index=${index} data-image=${song.image}>
+       <img class="ui avatar image" src="${song.image}"">
+        <div class="content">
+            <div id="equalizer">
+                <div id="bar1"></div>
+                <div id="bar2"></div>
+                <div id="bar3"></div>
+                <div id="bar4"></div>
+                </div>
+            <i class="icon button-overlay circle outline"></i>
+          <span class="header">${song.title}</span>
+          <div class="description">${song.artist}</div>
+        </div>
+      </div>`;
+        })
+        .join("");
+      var audio = new Audio();
+      var play = document.querySelector("#play");
+
+      $(document).on("click", ".item", function () {
+        var { src, artist, title, image, index } = this.dataset;
+
+        list_items.forEach((e) => {
+          e.classList.remove("active");
+          e.querySelector(".button-overlay").style.visibility = "hidden";
+          e.querySelector("#equalizer").style.visibility = "hidden";
+        });
+        this.classList.add("active");
+        var newaudio = new Audio(`./music/${src}`);
+
+        this.querySelector(".button-overlay").style.visibility = "visible";
+        this.querySelector("#equalizer").style.visibility = "visible";
+        if (
+          audio.currentTime > 0 &&
+          !audio.paused &&
+          audio.src == newaudio.src
+        ) {
+          audio.pause();
+          this.querySelector(".button-overlay").classList.add("play");
+          this.querySelector(".button-overlay").classList.remove("pause");
+        } else if (
+          audio.currentTime > 0 &&
+          audio.paused &&
+          audio.src == newaudio.src
+        ) {
+          this.querySelector(".button-overlay").classList.add("pause");
+          this.querySelector(".button-overlay").classList.remove("play");
+          audio.play();
+        } else {
+          this.querySelector(".button-overlay").classList.add("pause");
+          this.querySelector(".button-overlay").classList.remove("play");
+          currentSong = index;
+          playSong(src, artist, title, image);
+        }
+      });
+
+      document.getElementById("song-list").innerHTML = list_of_songs;
+      var list_items = document.querySelectorAll(".item");
+      console.log(list_items);
       var currentSong = 0;
       var audio = new Audio(`./music/${songs[0].song}`);
-      var icons = document.querySelectorAll(".fa");
+      var icons = document.querySelectorAll(".icon");
 
-      // var lyrics = new RabbitLyrics();
-      // lyric({
-      //     element: document.getElementById("lyrics-1"),
-      //     mediaElement: audio
-
-      // });
       var minutes = 0;
       var seconds = 0;
       audio.addEventListener("timeupdate", function (e) {
@@ -96,44 +147,83 @@
           let type = e.target.dataset.type;
           switch (type) {
             case "play":
-              artist_img.src = `./img/${songs[0].image}`;
-              artist_img.classList.add("rotate-image");
-              song_title.innerText = `${songs[0].artist} - ${songs[0].title}`;
-              audio.play();
-              document.querySelector("#title").classList.add("song-title");
-              e.target.classList.remove("fa-play");
-              e.target.classList.add("fa-pause");
-              e.target.dataset.type = "pause";
+              if (audio.currentTime > 0) {
+                play.classList.remove("play");
+                play.classList.add("pause");
+                play.dataset.type = "pause";
+                audio.play();
+              } else {
+                currentSong = 0;
+
+                document.querySelector(".item").classList.add("active");
+                var { song, artist, title, image } = songs[0];
+                playSong(song, title, artist, image);
+              }
               break;
             case "pause":
               audio.pause();
               artist_img.classList.remove("rotate-image");
-              e.target.classList.remove("fa-pause");
-              e.target.classList.add("fa-play");
+              e.target.classList.remove("pause");
+              e.target.classList.add("play");
               e.target.dataset.type = "play";
               break;
             case "prev":
+              console.log(currentSong);
               currentSong =
-                currentSong - 1 <= 0 ? songs.length - 1 : currentSong - 1;
-              artist_img.src = `./img/${songs[currentSong].image}`;
-              audio.src = `./music/${songs[currentSong].song}`;
-              song_title.innerText = `${songs[currentSong].artist} - ${songs[currentSong].title}`;
+                currentSong - 1 < 0 ? songs.length - 1 : currentSong - 1;
+              list_items.forEach((e) => {
+                e.classList.remove("active");
 
-              audio.play();
+                console.log(currentSong);
+              });
+              list_items[currentSong].classList.add("active");
+              var image = songs[currentSong].image;
+              var src = songs[currentSong].song;
+              var artist = songs[currentSong].artist;
+              var title = songs[currentSong].title;
+              playSong(src, title, artist, image);
+
               break;
             case "next":
               currentSong =
                 currentSong + 1 >= songs.length ? 0 : currentSong + 1;
-              artist_img.src = `./img/${songs[currentSong].image}`;
-              audio.src = `./music/${songs[currentSong].song}`;
-              song_title.innerText = `${songs[currentSong].artist} - ${songs[currentSong].title}`;
-
-              audio.play();
+              list_items.forEach((e) => {
+                e.classList.remove("active");
+              });
+              list_items[currentSong].classList.add("active");
+              var image = songs[currentSong].image;
+              var src = songs[currentSong].song;
+              var artist = songs[currentSong].artist;
+              var title = songs[currentSong].title;
+              playSong(src, title, artist, image);
               break;
             default:
               break;
           }
         });
+      });
+
+      function playSong(src, artist, title, image) {
+        document.querySelector(
+          ".artist-img-bg"
+        ).style.backgroundImage = `url(${image})`;
+        audio.src = `./music/${src}`;
+        artist_img.src = `${image}`;
+
+        artist_img.classList.add("rotate-image");
+        song_title.innerText = `${artist} - ${title}`;
+        document.querySelector("#title").classList.add("song-title");
+        play.classList.remove("play");
+        play.classList.add("pause");
+        play.dataset.type = "pause";
+        audio.play();
+      }
+      $(document).on("click", ".button-overlay", function () {
+        if (audio.currentTime > 0) {
+          this.classList.remove("play");
+          this.classList.add("pause");
+          audio.play();
+        }
       });
     </script>
   </body>
