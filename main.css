@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    padding: 0;
+    z-index: 101;
+}
+.container {
+    padding: 15px;
+    margin: 0 auto;
+    width: 100%;
+    background-color: #21173c;
+    display: flex;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.music-player {
+    width: 400px;
+    height: 600px;
+    background-color: rgb(13, 51, 78);
+    border-radius: 1em;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.artist-image {
+    margin-top: 20px ;
+    max-height: 200px;
+    max-width: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 10px #154275;
+
+}
+.rotate-image {
+    animation:rotate 20s infinite;
+    animation-timing-function: linear;
+}
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(365deg);
+    }
+}
+
+.controls {
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content:space-around;
+}
+.fa {
+    color:aliceblue;
+    font-size: 1em;
+}
+.song-title-container {
+    position: relative;
+    overflow: hidden;
+    width: 90%;
+    margin: 0 auto;
+}
+.song-title {
+    text-align: center;
+    color: white;
+    animation: song_title 10s infinite ease-in-out;
+    animation-timing-function: linear;
+    position: relative;
+}
+@keyframes song_title {
+   from {
+       left:50%;
+   } to {
+       left:-100%;
+   }
+}
+#timer, #title {
+    color: white;
+}

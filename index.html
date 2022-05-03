@@ -1,0 +1,140 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Player</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="./main.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="music-player">
+        <div>
+          <img
+            src="img/maxresdefault.webp"
+            class="artist-image"
+            alt="on and on"
+          />
+        </div>
+        <div class="song-title-container">
+          <h3 id="title">No song</h3>
+          <div id="time-progress" class="ui tiny progress">
+            <div style="min-width: 1%" class="bar"></div>
+            <div id="timer" class="label">-00:00-</div>
+          </div>
+        </div>
+        <div class="controls">
+          <i data-type="prev" id="prev" class="fa fa-backward"></i>
+          <i data-type="play" id="play" class="fa fa-play"></i>
+          <i data-type="next" id="pause" class="fa fa-forward"></i>
+        </div>
+        <!-- <div id="lyrics-1">
+                [00:05.00] This is a little song
+                [00:07.00] The song that nobody knows
+                </div> -->
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+    <script type="text/javascript">
+      $("#time-progress").progress({ percent: 0 });
+
+      var songs = [
+        {
+          artist: "Eden Gebreselassie",
+          image: "edeng.jpeg",
+          title: "Goblel",
+          song: "onandon.mp3",
+        },
+        {
+          artist: "Amanuel Yemane",
+          image: "edeng.jpeg",
+          title: "Adi Latni",
+          song: "fireflies.mp3",
+        },
+      ];
+
+      var currentSong = 0;
+      var audio = new Audio(`./music/${songs[0].song}`);
+      var icons = document.querySelectorAll(".fa");
+
+      // var lyrics = new RabbitLyrics();
+      // lyric({
+      //     element: document.getElementById("lyrics-1"),
+      //     mediaElement: audio
+
+      // });
+      var minutes = 0;
+      var seconds = 0;
+      audio.addEventListener("timeupdate", function (e) {
+        var currentTime = audio.currentTime;
+        var duration = audio.duration;
+        minutes = Math.floor(currentTime / 60);
+        minutes = minutes >= 10 ? minutes : "0" + minutes;
+        seconds = Math.floor(currentTime % 60);
+        seconds = seconds >= 10 ? seconds : "0" + seconds;
+        document.querySelector("#timer").innerText = `${minutes}:${seconds}`;
+
+        //progress
+        var progress = document.getElementById("time-progress");
+        var status = Math.floor((currentTime / duration) * 100);
+        $("#time-progress").progress({ percent: status });
+      });
+
+      var artist_img = document.querySelector(".artist-image");
+      var song_title = document.querySelector("#title");
+      icons.forEach((icon) => {
+        icon.addEventListener("click", (e) => {
+          let type = e.target.dataset.type;
+          switch (type) {
+            case "play":
+              artist_img.src = `./img/${songs[0].image}`;
+              artist_img.classList.add("rotate-image");
+              song_title.innerText = `${songs[0].artist} - ${songs[0].title}`;
+              audio.play();
+              document.querySelector("#title").classList.add("song-title");
+              e.target.classList.remove("fa-play");
+              e.target.classList.add("fa-pause");
+              e.target.dataset.type = "pause";
+              break;
+            case "pause":
+              audio.pause();
+              artist_img.classList.remove("rotate-image");
+              e.target.classList.remove("fa-pause");
+              e.target.classList.add("fa-play");
+              e.target.dataset.type = "play";
+              break;
+            case "prev":
+              currentSong =
+                currentSong - 1 <= 0 ? songs.length - 1 : currentSong - 1;
+              artist_img.src = `./img/${songs[currentSong].image}`;
+              audio.src = `./music/${songs[currentSong].song}`;
+              song_title.innerText = `${songs[currentSong].artist} - ${songs[currentSong].title}`;
+
+              audio.play();
+              break;
+            case "next":
+              currentSong =
+                currentSong + 1 >= songs.length ? 0 : currentSong + 1;
+              artist_img.src = `./img/${songs[currentSong].image}`;
+              audio.src = `./music/${songs[currentSong].song}`;
+              song_title.innerText = `${songs[currentSong].artist} - ${songs[currentSong].title}`;
+
+              audio.play();
+              break;
+            default:
+              break;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
